@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>StakeWave — Predict. Stake. Earn.</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-top">
+                <div class="logo">🌊 StakeWave</div>
+                <div class="balance-card">
+                    <span class="balance-label">Balance</span>
+                    <span class="balance-amount" id="balance">$0.00</span>
+                </div>
+            </div>
+            <div class="user-info">
+                <span class="username" id="username">Loading...</span>
+                <span class="level" id="level">Lv.1</span>
+                <span class="streak" id="streak">🔥 0</span>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-tabs">
+            <button class="nav-btn active" data-tab="home">🏠 Home</button>
+            <button class="nav-btn" data-tab="predict">🔮 Predict</button>
+            <button class="nav-btn" data-tab="stake">💰 Stake</button>
+            <button class="nav-btn" data-tab="tasks">📋 Tasks</button>
+            <button class="nav-btn" data-tab="more">⋯</button>
+        </nav>
+
+        <!-- Home Tab -->
+        <div class="tab-content active" id="tab-home">
+            <div class="quick-actions">
+                <button class="action-btn spin-btn" onclick="openSpin()">
+                    🎡<span>Spin</span>
+                </button>
+                <button class="action-btn daily-btn" onclick="claimDaily()">
+                    🎁<span>Daily</span>
+                </button>
+                <button class="action-btn refer-btn" onclick="openReferral()">
+                    👥<span>Refer</span>
+                </button>
+                <button class="action-btn leaderboard-btn" onclick="openLeaderboard()">
+                    🏆<span>Top</span>
+                </button>
+            </div>
+
+            <div class="section">
+                <h3>🔥 Hot Predictions</h3>
+                <div id="hot-predictions" class="predictions-list"></div>
+            </div>
+
+            <div class="section">
+                <h3>📋 Quick Tasks</h3>
+                <div id="quick-tasks" class="tasks-list"></div>
+            </div>
+        </div>
+
+        <!-- Predict Tab -->
+        <div class="tab-content" id="tab-predict">
+            <div class="section">
+                <h3>🔮 Active Predictions</h3>
+                <div class="filter-bar">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="crypto">Crypto</button>
+                    <button class="filter-btn" data-filter="stocks">Stocks</button>
+                    <button class="filter-btn" data-filter="tech">Tech</button>
+                    <button class="filter-btn" data-filter="finance">Finance</button>
+                </div>
+                <div id="predictions-list" class="predictions-list"></div>
+            </div>
+            <div class="section">
+                <h3>📊 My Bets</h3>
+                <div id="my-bets" class="bets-list"></div>
+            </div>
+        </div>
+
+        <!-- Stake Tab -->
+        <div class="tab-content" id="tab-stake">
+            <div class="stake-banner">
+                <div class="stake-apy">15% APY</div>
+                <div class="stake-desc">Earn passive income on your points</div>
+            </div>
+            <div class="stake-form">
+                <input type="number" id="stake-amount" placeholder="Amount to stake" min="0.10" step="0.01">
+                <button class="btn-primary" onclick="createStake()">💰 Stake Now</button>
+            </div>
+            <div class="section">
+                <h3>📈 My Stakes</h3>
+                <div id="my-stakes" class="stakes-list"></div>
+            </div>
+        </div>
+
+        <!-- Tasks Tab -->
+        <div class="tab-content" id="tab-tasks">
+            <div class="section">
+                <h3>📋 Available Tasks</h3>
+                <div id="tasks-list" class="tasks-list"></div>
+            </div>
+        </div>
+
+        <!-- More Tab -->
+        <div class="tab-content" id="tab-more">
+            <div class="menu-list">
+                <button class="menu-item" onclick="openReferral()">
+                    👥 Referral Program <span class="arrow">›</span>
+                </button>
+                <button class="menu-item" onclick="openLeaderboard()">
+                    🏆 Leaderboard <span class="arrow">›</span>
+                </button>
+                <button class="menu-item" onclick="openSpin()">
+                    🎡 Daily Spin <span class="arrow">›</span>
+                </button>
+                <button class="menu-item" onclick="showHistory()">
+                    📊 Transaction History <span class="arrow">›</span>
+                </button>
+                <button class="menu-item" onclick="showWithdraw()">
+                    💸 Withdraw <span class="arrow">›</span>
+                </button>
+                <button class="menu-item" onclick="showSettings()">
+                    ⚙️ Settings <span class="arrow">›</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Spin Modal -->
+        <div class="modal" id="spin-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>🎡 Daily Spin</h3>
+                    <button class="close-btn" onclick="closeModal('spin-modal')">✕</button>
+                </div>
+                <div class="spin-wheel-container">
+                    <canvas id="spin-wheel" width="300" height="300"></canvas>
+                    <button class="spin-go-btn" id="spin-go" onclick="doSpin()">SPIN!</button>
+                </div>
+                <div class="spin-result" id="spin-result"></div>
+            </div>
+        </div>
+
+        <!-- Prediction Modal -->
+        <div class="modal" id="predict-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="predict-title">Make Prediction</h3>
+                    <button class="close-btn" onclick="closeModal('predict-modal')">✕</button>
+                </div>
+                <div id="predict-body"></div>
+            </div>
+        </div>
+
+        <!-- Referral Modal -->
+        <div class="modal" id="referral-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>👥 Referral Program</h3>
+                    <button class="close-btn" onclick="closeModal('referral-modal')">✕</button>
+                </div>
+                <div class="referral-body">
+                    <p>Earn <strong>12% commission</strong> on every referral's earnings — forever!</p>
+                    <div class="referral-link-box">
+                        <input type="text" id="referral-link" readonly>
+                        <button onclick="copyReferral()">📋 Copy</button>
+                    </div>
+                    <div class="referral-stats">
+                        <div class="stat"><span class="stat-num" id="ref-count">0</span><span>Referrals</span></div>
+                        <div class="stat"><span class="stat-num" id="ref-earned">$0.00</span><span>Earned</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaderboard Modal -->
+        <div class="modal" id="leaderboard-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>🏆 Leaderboard</h3>
+                    <button class="close-btn" onclick="closeModal('leaderboard-modal')">✕</button>
+                </div>
+                <div id="leaderboard-body" class="leaderboard-list"></div>
+            </div>
+        </div>
+
+        <!-- Toast -->
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

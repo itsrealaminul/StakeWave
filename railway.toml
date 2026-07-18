@@ -1,0 +1,6 @@
+[build]
+command = "cd backend && pip install -r requirements.txt"
+root = "."
+
+[deploy]
+startCommand = "cd backend && python main.py"
